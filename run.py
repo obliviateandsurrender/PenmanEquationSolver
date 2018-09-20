@@ -40,3 +40,5 @@ R = 20.34  # http://www.indiaenvironmentportal.org.in/files/srd-sec.pdf
 d = vap_def(data['main']['temp_min'], data['main']['temp_max'], data['main']['humidity'])
 E = (penman_shuttle(m, R, G, u, L, d))
 print(E)
+
+#For Plotting have a look at iter.txt
