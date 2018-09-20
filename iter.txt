@@ -1,0 +1,62 @@
+def frange(start, stop, step):
+    i = start
+    while i < stop:
+        yield i
+        i += step
+
+
+tmean = [x for x in frange(280, 318, .1)]
+E = []
+for i in tmean:
+    m = slope(i)
+    p = pressure(550) #Height
+    G = pcons(p)
+    u = data['wind']['speed']
+    L = 2.45   # Google
+    R = 20.34  # http://www.indiaenvironmentportal.org.in/files/srd-sec.pdf
+    d = vap_def(i + 5, i - 5, data['main']['humidity']/math.e**((i - 302.5) / 302.5))
+    E.append(penman_shuttle(m, R, G, u, L, d))
+
+plt.plot(tmean,E)
+plt.title('Dependence on Temperature')
+plt.xlabel('Mean Temperature (K)')
+plt.ylabel('Evaporation Rate')
+plt.show()
+
+p = [pressure(x) for x in frange(200, 900, 10)]
+E = []
+for i in p:
+    tmean = t_mean(data['main']['temp_min'], data['main']['temp_max'])
+    m = slope(tmean)
+    G = pcons(i)
+    u = data['wind']['speed']
+    L = 2.45   # Google
+    R = 20.34  # http://www.indiaenvironmentportal.org.in/files/srd-sec.pdf
+    d = vap_def(data['main']['temp_min'], data['main']['temp_max'], data['main']['humidity'])
+    E.append(penman_shuttle(m, R, G, u, L, d))
+
+plt.plot(p, E)
+plt.title('Dependence on Air Pressure')
+plt.xlabel('Air Pressure (kPa)')
+plt.ylabel('Evaporation Rate')
+plt.show()
+
+u = [x for x in frange(0, 10, .1)]
+E = []
+for i in u:
+    tmean = t_mean(data['main']['temp_min'], data['main']['temp_max'])
+    m = slope(tmean)
+    p = pressure(550)  # Height
+    G = pcons(p)
+    #u = i#data['wind']['speed']
+    L = 2.45   # Google
+    R = 20.34  # http://www.indiaenvironmentportal.org.in/files/srd-sec.pdf
+    d = vap_def(data['main']['temp_min'], data['main']['temp_max'], data['main']['humidity'])
+    E.append(penman_shuttle(m, R, G, i, L, d))
+
+plt.plot(u, E)
+plt.title('Dependence on Wind Speed')
+plt.xlabel('Wind Speed (m/s)')
+plt.ylabel('Evaporation Rate')
+plt.show()
+
